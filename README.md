@@ -79,6 +79,21 @@ Plain Java, no libraries, about 35 KB of code (the 9 MB APK is mostly the 16 bun
   adb shell am start -n com.leantv.home/.HomeActivity --ez reset_dock true
   ```
 
+### Home button
+
+The yes+ firmware gives its own launcher top priority and blocks `pm disable-user`, component disable and
+`pm hide`, so `set-home-activity` alone doesn't take. Suspending the stock launcher doesn't help either:
+Home then lands on Android's "app paused" screen. Instead LeanTV Home has a tiny accessibility service
+(`HomeKeyService`) that watches only the stock launcher's window. Whenever that launcher comes to the
+front (Home button, boot, an app closing) the service replaces it with LeanTV Home, after a brief flash.
+If LeanTV Home crashes repeatedly, the service backs off and leaves the stock launcher usable.
+
+```
+.\scripts\home-button.ps1          # on  (logged in backups\changes.log)
+.\scripts\home-button.ps1 -Off     # off: Home goes to the stock launcher again
+```
+`restore.bat` switches it off as well. It also appears in Settings > Accessibility as "LeanTV Home button".
+
 Build needs the Android SDK (build-tools + platform, already in `%LOCALAPPDATA%\Android\Sdk`) and a
 JDK 11+. No Gradle. The signing key is generated in `keys\` on first build. Keep it, because updates must
 be signed with the same key.

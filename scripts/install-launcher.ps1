@@ -57,6 +57,6 @@ Save-Shot 'home-focus-moved' $shotDir | Out-Null
 
 if ($now -notmatch 'com\.leantv\.home') {
     Write-Warning 'HOME did not land on LeanTV Home. This box may hard-wire its own launcher to the Home button.'
-    Write-Warning 'Options: disable the stock launcher (see debloat\plan.txt, launcher section) or keep using it.'
+    Write-Warning 'Run .\scripts\home-button.ps1 to make Home open LeanTV Home anyway.'
 }
 Write-Host "Screenshots: $shotDir"

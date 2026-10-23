@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.leantv.home"
-    android:versionCode="2"
-    android:versionName="2.0">
+    android:versionCode="4"
+    android:versionName="2.2">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
 
@@ -79,5 +79,18 @@
             android:excludeFromRecents="true"
             android:screenOrientation="landscape"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
+        <!-- Home button helper for firmware that pins its own launcher. Off until enabled with adb. -->
+        <service
+            android:name=".HomeKeyService"
+            android:label="@string/home_key_label"
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/home_key_service" />
+        </service>
     </application>
 </manifest>

@@ -15,4 +15,6 @@
     <string name="videos_empty">Drop videos onto LeanTV Drop on your computer and they appear here.</string>
     <string name="delete">Delete</string>
     <string name="cant_play">This video cannot be played</string>
+    <string name="home_key_service">Opens LeanTV Home when you press the Home button.</string>
+    <string name="home_key_label">LeanTV Home button</string>
 </resources>

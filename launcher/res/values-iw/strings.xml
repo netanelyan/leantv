@@ -14,4 +14,6 @@
     <string name="videos_empty">גוררים סרטונים אל LeanTV Drop במחשב והם יופיעו כאן.</string>
     <string name="delete">מחיקה</string>
     <string name="cant_play">אי אפשר להפעיל את הסרטון הזה</string>
+    <string name="home_key_service">פותח את LeanTV Home כשלוחצים על כפתור הבית.</string>
+    <string name="home_key_label">כפתור הבית של LeanTV</string>
 </resources>
