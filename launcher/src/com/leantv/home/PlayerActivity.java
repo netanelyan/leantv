@@ -32,6 +32,9 @@ import java.util.Locale;
  *
  * Remote: OK / play-pause toggles, left/right (or rewind/fast-forward) jump 10 s (30 s while held),
  * up/down show the progress bar, back closes.
+ *
+ * From the library: "key" (where progress is stored, so playback resumes) and an optional queue of the
+ * episodes that follow ("queue_urls", "queue_keys", "queue_titles"), played one after another.
  */
 public class PlayerActivity extends Activity {
 
@@ -47,8 +50,17 @@ public class PlayerActivity extends Activity {
     private final Handler ui = new Handler(Looper.getMainLooper());
     private boolean prepared;
     private int resumeAt;
+    private String key;
+    private String[] queueUrls, queueKeys, queueTitles;
+    private int queueNext;
 
     private final Runnable hide = () -> showOverlay(false);
+    private final Runnable saver = new Runnable() {
+        @Override public void run() {
+            saveProgress();
+            ui.postDelayed(this, 5000);
+        }
+    };
     private final Runnable progress = new Runnable() {
         @Override public void run() {
             updateProgress();
@@ -146,6 +158,13 @@ public class PlayerActivity extends Activity {
             showOverlay(true);
         });
         video.setOnCompletionListener(mp -> {
+            if (key != null) Library.markWatched(this, key, true);
+            key = null;
+            if (queueUrls != null && queueNext < queueUrls.length) {
+                int n = queueNext++;
+                open(Uri.parse(queueUrls[n]), queueTitles[n], queueKeys[n]);
+                return;
+            }
             showOverlay(true);
             ui.postDelayed(this::finish, 1200);
         });
@@ -172,11 +191,29 @@ public class PlayerActivity extends Activity {
         }
         if (t == null) t = i.getStringExtra("title");
         if (t == null) t = Videos.title(new File(uri.getPath() != null ? uri.getPath() : "video").getName());
+        queueUrls = i.getStringArrayExtra("queue_urls");
+        queueKeys = i.getStringArrayExtra("queue_keys");
+        queueTitles = i.getStringArrayExtra("queue_titles");
+        if (queueUrls == null || queueKeys == null || queueTitles == null) queueUrls = queueKeys = queueTitles = null;
+        queueNext = 0;
+        open(uri, t, i.getStringExtra("key"));
+    }
+
+    private void open(Uri uri, String t, String progressKey) {
+        saveProgress();
+        key = progressKey;
         title.setText(t);
         prepared = false;
+        resumeAt = Library.resumeAt(this, key);
         spinner.setVisibility(View.VISIBLE);
         video.setVideoURI(uri);
         showOverlay(true);
+        ui.removeCallbacks(saver);
+        ui.postDelayed(saver, 5000);
+    }
+
+    private void saveProgress() {
+        if (key != null && prepared) Library.saveProgress(this, key, video.getCurrentPosition(), video.getDuration());
     }
 
     private void toggle() {
@@ -268,6 +305,7 @@ public class PlayerActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        saveProgress();
         if (prepared) resumeAt = video.getCurrentPosition();
         video.pause();
         ui.removeCallbacksAndMessages(null);
@@ -282,6 +320,7 @@ public class PlayerActivity extends Activity {
             resumeAt = 0;
             showOverlay(true);
         }
+        if (key != null) { ui.removeCallbacks(saver); ui.postDelayed(saver, 5000); }
     }
 
     @Override

@@ -17,4 +17,23 @@
     <string name="cant_play">This video cannot be played</string>
     <string name="home_key_service">Opens LeanTV Home when you press the Home button.</string>
     <string name="home_key_label">LeanTV Home button</string>
+    <string name="continue_watching">Continue Watching</string>
+    <string name="movies">Movies</string>
+    <string name="on_this_tv">On This TV</string>
+    <string name="library_online">From %1$s  ·  %2$d videos</string>
+    <string name="library_offline">The library on your computer isn’t available</string>
+    <string name="library_offline_help">Open LeanTV Library on your computer (it starts with Windows) and your videos appear here.</string>
+    <string name="episode_n">Episode %1$d</string>
+    <string name="season_episode">S%1$d  ·  E%2$d</string>
+    <string name="season_n">Season %1$d</string>
+    <string name="minutes">%1$d min</string>
+    <string name="minutes_left">%1$d min left</string>
+    <string name="watched">Watched</string>
+    <string name="play_from_start">Play from the beginning</string>
+    <string name="mark_watched">Mark as watched</string>
+    <string name="mark_unwatched">Mark as unwatched</string>
+    <plurals name="episodes">
+        <item quantity="one">%d episode</item>
+        <item quantity="other">%d episodes</item>
+    </plurals>
 </resources>

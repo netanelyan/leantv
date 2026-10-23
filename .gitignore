@@ -9,3 +9,6 @@ shots/
 .device
 debloat/plan.txt
 debloat/report.md
+# per-PC LeanTV Library settings
+library-folders.txt
+.library-autostart-asked

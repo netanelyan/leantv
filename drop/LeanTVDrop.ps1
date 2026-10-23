@@ -22,108 +22,8 @@ $VideoExt = '.mp4', '.m4v', '.mkv', '.mov', '.webm', '.ts', '.3gp'
 
 # ---------------------------------------------------------------- streaming server (loopback only)
 
+. "$PSScriptRoot\Server.ps1"
 $Shared = [hashtable]::Synchronized(@{ Files = [hashtable]::Synchronized(@{}); Next = 0 })
-
-$Handler = {
-    param($client, $shared)
-    $mime = @{ '.mp4' = 'video/mp4'; '.m4v' = 'video/mp4'; '.mkv' = 'video/x-matroska'; '.webm' = 'video/webm';
-               '.mov' = 'video/quicktime'; '.ts' = 'video/mp2t'; '.3gp' = 'video/3gpp' }
-    $net = $null; $fs = $null
-    try {
-        $client.NoDelay = $true
-        $net = $client.GetStream()
-        $net.ReadTimeout = 20000
-        # Read the request head (up to the blank line).
-        $buf = New-Object byte[] 16384; $n = 0
-        while ($n -lt $buf.Length) {
-            $r = $net.Read($buf, $n, $buf.Length - $n)
-            if ($r -le 0) { break }
-            $n += $r
-            if ([Text.Encoding]::ASCII.GetString($buf, 0, $n).Contains("`r`n`r`n")) { break }
-        }
-        $head = [Text.Encoding]::ASCII.GetString($buf, 0, $n) -split "`r`n"
-        $method, $target = ($head[0] -split ' ')[0, 1]
-        $range = ($head | Where-Object { $_ -match '^Range:\s*bytes=' } | Select-Object -First 1)
-
-        $path = $null
-        if ($target -match '^/v/(\d+)') { $path = $shared.Files[[int]$Matches[1]] }
-        if (-not $path -or -not (Test-Path -LiteralPath $path)) {
-            $msg = [Text.Encoding]::ASCII.GetBytes("HTTP/1.1 404 Not Found`r`nContent-Length: 0`r`nConnection: close`r`n`r`n")
-            $net.Write($msg, 0, $msg.Length); return
-        }
-        $fs = [IO.File]::Open($path, 'Open', 'Read', 'ReadWrite')
-        $len = $fs.Length
-        $start = 0L; $end = $len - 1; $status = '200 OK'
-        if ($range -and $range -match 'bytes=(\d*)-(\d*)') {
-            if ($Matches[1] -eq '') { $start = [Math]::Max(0, $len - [long]$Matches[2]) }
-            else {
-                $start = [long]$Matches[1]
-                if ($Matches[2] -ne '') { $end = [Math]::Min($len - 1, [long]$Matches[2]) }
-            }
-            if ($start -ge $len) {
-                $msg = [Text.Encoding]::ASCII.GetBytes("HTTP/1.1 416 Range Not Satisfiable`r`nContent-Range: bytes */$len`r`nContent-Length: 0`r`nConnection: close`r`n`r`n")
-                $net.Write($msg, 0, $msg.Length); return
-            }
-            $status = '206 Partial Content'
-        }
-        $count = $end - $start + 1
-        $type = $mime[[IO.Path]::GetExtension($path).ToLower()]; if (-not $type) { $type = 'application/octet-stream' }
-        $h = "HTTP/1.1 $status`r`nContent-Type: $type`r`nContent-Length: $count`r`nAccept-Ranges: bytes`r`n"
-        if ($status -like '206*') { $h += "Content-Range: bytes $start-$end/$len`r`n" }
-        $h += "Connection: close`r`n`r`n"
-        $hb = [Text.Encoding]::ASCII.GetBytes($h)
-        $net.Write($hb, 0, $hb.Length)
-        if ($method -eq 'HEAD') { return }
-        $fs.Position = $start
-        $chunk = New-Object byte[] 262144
-        while ($count -gt 0) {
-            $r = $fs.Read($chunk, 0, [int][Math]::Min($chunk.Length, $count))
-            if ($r -le 0) { break }
-            $net.Write($chunk, 0, $r)
-            $count -= $r
-        }
-    } catch {
-        # The player closes connections whenever it seeks; that is normal.
-    } finally {
-        if ($fs) { $fs.Dispose() }
-        if ($net) { $net.Dispose() }
-        $client.Close()
-    }
-}
-
-function Start-Server {
-    foreach ($p in 8765..8785) {
-        try {
-            $l = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, $p)
-            $l.Start()
-            $script:Listener = $l; $script:Port = $p
-            break
-        } catch { }
-    }
-    if (-not $script:Listener) { throw 'No free local port for streaming (8765-8785).' }
-    $script:Pool = [runspacefactory]::CreateRunspacePool(1, 12)
-    $script:Pool.Open()
-    $script:AcceptPs = [powershell]::Create()
-    [void]$script:AcceptPs.AddScript({
-        param($listener, $pool, $handlerText, $shared)
-        $handler = [scriptblock]::Create($handlerText)
-        $running = New-Object System.Collections.ArrayList
-        while ($true) {
-            try { $c = $listener.AcceptTcpClient() } catch { break }
-            foreach ($j in @($running)) { if ($j.H.IsCompleted) { $j.P.Dispose(); $running.Remove($j) } }
-            $ps = [powershell]::Create(); $ps.RunspacePool = $pool
-            [void]$ps.AddScript($handler).AddArgument($c).AddArgument($shared)
-            [void]$running.Add(@{ P = $ps; H = $ps.BeginInvoke() })
-        }
-    }).AddArgument($script:Listener).AddArgument($script:Pool).AddArgument($Handler.ToString()).AddArgument($Shared)
-    $script:AcceptHandle = $script:AcceptPs.BeginInvoke()
-}
-
-function Stop-Server {
-    try { $script:Listener.Stop() } catch { }
-    try { AdbD reverse --remove "tcp:$script:Port" | Out-Null } catch { }
-    try { $script:Pool.Close() } catch { }
-}
 
 # ---------------------------------------------------------------- TV side
 
@@ -275,7 +175,7 @@ function Send-Files([string[]]$files) {
 
     if (-not $copy.Checked) {
         AdbD reverse "tcp:$script:Port" "tcp:$script:Port" | Out-Null
-        $id = ++$Shared.Next
+        $id = [string](++$Shared.Next)
         $Shared.Files[$id] = $file
         Start-Player "http://127.0.0.1:$script:Port/v/$id" $name
         Set-Status "Playing on the TV: $name$more`nKeep this window open while it plays." $ok
@@ -374,5 +274,6 @@ $form.Add_FormClosing({
     }
 })
 
-Start-Server
-try { [void]$form.ShowDialog() } finally { Stop-Server }
+$script:Srv = Start-LeanServer -Ports (8765..8785) -Shared $Shared
+$script:Port = $script:Srv.Port
+try { [void]$form.ShowDialog() } finally { Stop-LeanServer $script:Srv }

@@ -16,4 +16,24 @@
     <string name="cant_play">אי אפשר להפעיל את הסרטון הזה</string>
     <string name="home_key_service">פותח את LeanTV Home כשלוחצים על כפתור הבית.</string>
     <string name="home_key_label">כפתור הבית של LeanTV</string>
+    <string name="continue_watching">להמשך צפייה</string>
+    <string name="movies">סרטים</string>
+    <string name="on_this_tv">בטלוויזיה</string>
+    <string name="library_online">מ־%1$s  ·  %2$d סרטונים</string>
+    <string name="library_offline">הספרייה במחשב לא זמינה כרגע</string>
+    <string name="library_offline_help">פתחו את LeanTV Library במחשב (הוא עולה עם Windows) והסרטונים יופיעו כאן.</string>
+    <string name="episode_n">פרק %1$d</string>
+    <string name="season_episode">עונה %1$d  ·  פרק %2$d</string>
+    <string name="season_n">עונה %1$d</string>
+    <string name="minutes">%1$d דק׳</string>
+    <string name="minutes_left">נותרו %1$d דק׳</string>
+    <string name="watched">נצפה</string>
+    <string name="play_from_start">ניגון מההתחלה</string>
+    <string name="mark_watched">סימון כנצפה</string>
+    <string name="mark_unwatched">סימון כלא נצפה</string>
+    <plurals name="episodes">
+        <item quantity="one">פרק אחד</item>
+        <item quantity="two">%d פרקים</item>
+        <item quantity="other">%d פרקים</item>
+    </plurals>
 </resources>

@@ -114,6 +114,24 @@ window, or drop them straight onto the shortcut. mp4 / mkv / mov / webm / m4v / 
   then plays; it stays under *Videos* on the home screen (long-press to delete). The TV has only ~1.3 GB
   free, so this is for clips; the app refuses files that don't fit.
 
+## LeanTV Library (your computer's videos on the TV)
+
+A very small Jellyfin. `LeanTV Library.bat` puts an icon in the tray and shares the folders listed in
+`library-folders.txt` (default: Videos and Downloads) with the **Videos** tile on the TV.
+
+* Rows: **Continue Watching** (half-watched videos, plus the next episode of each show you are watching),
+  one row per show with episodes in order, **Movies**, and **On This TV** (videos copied with Drop).
+* Release-style names are understood: `Show.Name.S02E08.1080p.WEB-DL...` becomes "Show Name, S2 E8",
+  `Movie.2019.1080p.BluRay...` becomes "Movie (2019)". `node_modules`, samples and screen recordings are skipped.
+* Poster frames are grabbed from each video by the TV once and cached. Playback resumes where you stopped,
+  and episodes play on into the next one. Long-press OK (or Menu) on a card: play from the beginning,
+  mark watched/unwatched, delete (videos on the TV only).
+* Right-click the tray icon to add/remove folders, rescan, or switch off "Start with Windows" (on by default;
+  the shortcut lives in the Startup folder).
+* Videos stream from the computer, so it must be on and awake. Like Drop, it uses the adb tunnel
+  (`adb reverse tcp:8790`), so no firewall rule or open port; the tray app re-creates the tunnel after the
+  TV reboots. Files the TV cannot decode are not converted (there is no transcoding).
+
 ## Photo credits
 
 Wikimedia Commons, licences CC0 / public domain / CC BY / CC BY-SA. Per-photo author, licence and

@@ -44,7 +44,6 @@ public class HomeActivity extends Activity implements Tiles.Listener {
     private HorizontalScrollView dockScroll;
     private boolean dirty = true;
     private String shownDock;
-    private int shownVideos = -1;
     private boolean resumed;
 
     private final BroadcastReceiver packagesChanged = new BroadcastReceiver() {
@@ -186,8 +185,7 @@ public class HomeActivity extends Activity implements Tiles.Listener {
         Map<String, Apps.App> all = Apps.all(this);
         List<String> ids = Apps.dock(this);
         shownDock = ids.toString();
-        shownVideos = Videos.list(this).size();
-        int tiles = ids.size() + 1 + (shownVideos > 0 ? 1 : 0);
+        int tiles = ids.size() + 2;
 
         // Big tiles; the shelf grows to fit them and scrolls once it reaches the screen width.
         int screenDp = getResources().getConfiguration().screenWidthDp;
@@ -197,7 +195,7 @@ public class HomeActivity extends Activity implements Tiles.Listener {
             Apps.App a = all.get(id);
             if (a != null) addTile(Tiles.make(this, a, w, this));
         }
-        if (shownVideos > 0) addTile(Tiles.action(this, getString(R.string.videos), new Tiles.PlayGlyph(false), w,
+        addTile(Tiles.action(this, getString(R.string.videos), new Tiles.PlayGlyph(false), w,
                 v -> startActivity(new Intent(this, VideosActivity.class))));
         addTile(Tiles.action(this, getString(R.string.all_apps), new Tiles.DotGrid(), w,
                 v -> startActivity(new Intent(this, AppsActivity.class))));
@@ -288,7 +286,7 @@ public class HomeActivity extends Activity implements Tiles.Listener {
         super.onResume();
         resumed = true;
         if (Apps.refreshIfStale(this)) dirty = true;
-        if (dirty || !Apps.dock(this).toString().equals(shownDock) || Videos.list(this).size() != shownVideos)
+        if (dirty || !Apps.dock(this).toString().equals(shownDock))
             rebuildDock();
         wallpapers.start();
     }
