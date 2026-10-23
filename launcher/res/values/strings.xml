@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LeanTV Home</string>
+    <string name="all_apps">All Apps</string>
+    <string name="settings">Settings</string>
+    <string name="apps_title">Apps</string>
+    <string name="add_to_dock">Add to dock</string>
+    <string name="remove_from_dock">Remove from dock</string>
+    <string name="move_left">Move left</string>
+    <string name="move_right">Move right</string>
+    <string name="app_info">App info</string>
+    <string name="photo_by">Photo: %1$s</string>
+    <string name="videos">Videos</string>
+    <string name="videos_title">Videos from your computer</string>
+    <string name="videos_empty">Drop videos onto LeanTV Drop on your computer and they appear here.</string>
+    <string name="delete">Delete</string>
+    <string name="cant_play">This video cannot be played</string>
+</resources>

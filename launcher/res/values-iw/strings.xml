@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="all_apps">כל האפליקציות</string>
+    <string name="settings">הגדרות</string>
+    <string name="apps_title">אפליקציות</string>
+    <string name="add_to_dock">הוספה לסרגל</string>
+    <string name="remove_from_dock">הסרה מהסרגל</string>
+    <string name="move_left">הזזה שמאלה</string>
+    <string name="move_right">הזזה ימינה</string>
+    <string name="app_info">פרטי האפליקציה</string>
+    <string name="photo_by">צילום: %1$s</string>
+    <string name="videos">סרטונים</string>
+    <string name="videos_title">סרטונים מהמחשב</string>
+    <string name="videos_empty">גוררים סרטונים אל LeanTV Drop במחשב והם יופיעו כאן.</string>
+    <string name="delete">מחיקה</string>
+    <string name="cant_play">אי אפשר להפעיל את הסרטון הזה</string>
+</resources>

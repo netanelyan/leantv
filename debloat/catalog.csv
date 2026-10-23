@@ -1,0 +1,58 @@
+pattern,action,category,note
+com.google.android.tvrecommendations,disable,ads,Sponsored / recommended content rows on the stock home screen
+com.google.android.leanbacklauncher.recommendations,disable,ads,Recommendation rows for the old Android TV home
+com.google.android.tvlauncher.partnercustomizer,disable,ads,Partner (operator) channel/ads customisation for the stock home
+com.google.android.apps.tv.launcherx.partnercustomizer,disable,ads,Partner (operator) customisation for the Google TV home
+com.android.adservices.api,disable,ads,Android ad-services / ad-ID API
+com.google.android.adservices.api,disable,ads,Android ad-services / ad-ID API
+com.google.android.feedback,disable,telemetry,Sends feedback / crash reports to Google
+com.google.android.tv.bugreportsender,disable,telemetry,Bug report uploader
+com.android.traceur,disable,telemetry,System tracing (developer tool)
+com.android.providers.partnerbookmarks,disable,junk,Partner bookmarks provider
+com.google.android.partnersetup,disable,junk,Partner customisation setup
+com.google.android.play.games,disable,junk,Google Play Games
+com.android.printspooler,disable,junk,Printing service (a TV cannot print)
+com.android.bips,disable,junk,Default print service
+com.android.dreams.phototable,disable,junk,Photo table screensaver
+com.android.dreams.basic,keep,screensaver,Basic screensaver (light; keeps panel from burning in)
+*analytics*,disable,telemetry,Analytics collector (matched by name)
+*telemetry*,disable,telemetry,Telemetry collector (matched by name)
+*crashreport*,disable,telemetry,Crash reporter (matched by name)
+*bugreport*,disable,telemetry,Bug report uploader (matched by name)
+*logcollect*,disable,telemetry,Log collector (matched by name)
+*advert*,disable,ads,Advertising component (matched by name)
+*.ads,disable,ads,Advertising component (matched by name)
+*.ads.*,disable,ads,Advertising component (matched by name)
+*adservice*,disable,ads,Advertising component (matched by name)
+com.google.android.apps.tv.launcherx,ask,launcher,Google TV home screen (the one with ads). Disable only after LeanTV Home is confirmed working
+com.google.android.tvlauncher,ask,launcher,Android TV home screen (sponsored rows). Disable only after LeanTV Home is confirmed working
+com.google.android.leanbacklauncher,ask,launcher,Old Android TV home screen. Disable only after LeanTV Home is confirmed working
+com.google.android.apps.mediashell,ask,feature,Chromecast built-in: casting from phone apps (YouTube/Netflix cast button)
+com.google.android.katniss,ask,feature,Google Assistant / voice search (remote mic button)
+com.google.android.speech.pumpkin,ask,feature,Offline voice commands (goes with Assistant)
+com.google.android.backdrop,ask,feature,Ambient Mode screensaver (Google photos/art; can show suggestions)
+com.google.android.apps.tv.dreamx,ask,feature,Google TV Ambient Mode screensaver
+com.google.android.tv,ask,feature,Live Channels app (TV inputs / tuner guide)
+com.google.android.youtube.tv,ask,app,YouTube
+com.google.android.youtube.tvkids,ask,app,YouTube Kids
+com.google.android.youtube.tvmusic,ask,app,YouTube Music
+com.google.android.videos,ask,app,Google TV / Play Movies & TV
+com.google.android.music,ask,app,Google Play Music (discontinued)
+com.google.android.apps.youtube.music.pwa,ask,app,YouTube Music
+com.netflix.ninja,ask,app,Netflix
+com.amazon.amazonvideo.livingroom,ask,app,Prime Video
+com.disney.disneyplus,ask,app,Disney+
+com.apple.atve.androidtv.appletv,ask,app,Apple TV+
+com.spotify.tv.android,ask,app,Spotify
+com.plexapp.android,ask,app,Plex
+*fota*,ask,updates,Firmware-over-the-air updater (security updates; also re-enables bloat)
+*.ota,ask,updates,System updater (security updates)
+*.ota.*,ask,updates,System updater (security updates)
+*tr069*,ask,operator,Operator remote-management agent (TR-069)
+*cwmp*,ask,operator,Operator remote-management agent (TR-069/CWMP)
+com.google.android.gms,keep,core,Google Play services
+com.google.android.gsf,keep,core,Google services framework
+com.android.vending,keep,core,Play Store
+com.google.android.tv.remote.service,keep,core,Phone remote / Google Home control
+com.google.android.tungsten.setupwraith,keep,core,Setup wizard (needed after a factory reset)
+com.google.android.marvin.talkback,keep,accessibility,TalkBack

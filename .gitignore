@@ -1,0 +1,11 @@
+# downloaded tools and build output
+tools/
+dist/
+# signing key for LeanTV Home (keep a copy: updates must be signed with the same key)
+keys/
+# per-TV data: snapshots, screenshots, connection, generated plan/report
+backups/
+shots/
+.device
+debloat/plan.txt
+debloat/report.md
